@@ -8,14 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject var vm = TaskViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+            TaskListView()
+                .navigationTitle("Realm To Do")
+                .toolbar {
+                    ToolbarItemGroup(placement: .bottomBar) {
+                        Text("\(vm.tasks.count) Task Remaining")
+                            .foregroundColor(Color.accentColor)
+                        Spacer()
+                        Button {
+                            //add new task
+                        } label: {
+                            Image(systemName: "plus.circle")
+                                .font(.title)
+                                .foregroundColor(Color.accentColor)
+                        }
+                    }
+                }
         }
-        .padding()
     }
 }
 
