@@ -6,29 +6,35 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct TaskRowView: View {
     
-    let task: String
-    let completed: Bool
+    @StateObject var vm = TaskViewModel()
+    @ObservedRealmObject var items: Task
     
     var body: some View {
         HStack {
-            Image(systemName: completed ? "checkmark.circle" : "circle")
-                .foregroundColor(completed ? Color.accentColor : Color(UIColor.label))
-            Text(task)
-                .strikethrough(completed, color: completed ? Color.accentColor : Color(UIColor.label))
+            Image(systemName: items.completed ? "checkmark.circle" : "circle")
+                .foregroundColor(items.completed ? Color.accentColor : Color(UIColor.label))
+            Text(items.task)
+                .strikethrough(items.completed, color: items.completed ? Color.accentColor : Color(UIColor.label))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.white)
+        .onTapGesture {
+            let realm = try! Realm()
+            try! realm.write({
+                items.thaw()?.completed = !items.completed
+            })
+        }
     }
 }
 
 struct TaskRowView_Previews: PreviewProvider {
     static var previews: some View {
         VStack (spacing: 10) {
-            TaskRowView(task: "Exercise in the morning", completed: false)
-            TaskRowView(task: "Exercise in the morning", completed: true)
+            TaskRowView(items: Task())
         }
     }
 }

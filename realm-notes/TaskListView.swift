@@ -6,17 +6,18 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct TaskListView: View {
-        
-    @StateObject var vm = TaskViewModel()
+    
+    @ObservedResults(Task.self, sortDescriptor: .init(keyPath: "completed", ascending: true)) var tasks
     
     var body: some View {
-        List(vm.tasks, id: \.id) { item in
-            TaskRowView(task: item.task, completed: item.completed)
-                .onTapGesture {
-                    print("firee \(item.task)")
-                }
+        List {
+            ForEach(tasks, id: \.id) { item in
+                TaskRowView(items: item)
+            }
+            .onDelete(perform: $tasks.remove(atOffsets:))
         }
     }
 }

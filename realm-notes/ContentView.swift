@@ -6,22 +6,24 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct ContentView: View {
     
     @StateObject var vm = TaskViewModel()
-    
+    @ObservedResults(Task.self) var tasks
+
     var body: some View {
         NavigationView {
             TaskListView()
                 .navigationTitle("Realm To Do")
                 .toolbar {
                     ToolbarItemGroup(placement: .bottomBar) {
-                        Text("\(vm.tasks.count) Task Remaining")
+                        Text("\(tasks.filter({$0.completed == false}).count) Task Remaining")
                             .foregroundColor(Color.accentColor)
                         Spacer()
                         Button {
-                            //add new task
+                            vm.showAddAlert.toggle()
                         } label: {
                             Image(systemName: "plus.circle")
                                 .font(.title)
@@ -29,6 +31,21 @@ struct ContentView: View {
                         }
                     }
                 }
+                .alert("Add New Task", isPresented: $vm.showAddAlert) {
+                    TextField("Write task here...", text: $vm.taskTitle)
+                        .autocorrectionDisabled()
+                    Button("Add", role: .none) {
+                        print(vm.taskTitle)
+                        let newTask = Task(task: vm.taskTitle)
+                        $tasks.append(newTask)
+                        vm.taskTitle = ""
+                    }
+                    Button("Cancel", role: .cancel) {
+                    }
+                } message: {
+                    Text("Add new taks below")
+                }
+
         }
     }
 }
