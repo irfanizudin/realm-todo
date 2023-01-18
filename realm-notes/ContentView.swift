@@ -35,9 +35,7 @@ struct ContentView: View {
                     TextField("Write task here...", text: $vm.taskTitle)
                         .autocorrectionDisabled()
                     Button("Add", role: .none) {
-                        print(vm.taskTitle)
-                        let newTask = Task(task: vm.taskTitle)
-                        $tasks.append(newTask)
+                        vm.addTask(taskTitle: vm.taskTitle)
                         vm.taskTitle = ""
                     }
                     Button("Cancel", role: .cancel) {

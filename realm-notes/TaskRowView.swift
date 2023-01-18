@@ -23,10 +23,7 @@ struct TaskRowView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.white)
         .onTapGesture {
-            let realm = try! Realm()
-            try! realm.write({
-                items.thaw()?.completed = !items.completed
-            })
+            vm.markCompleted(item: items, completed: items.completed)
         }
     }
 }
